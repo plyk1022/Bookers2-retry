@@ -1,4 +1,6 @@
 class UsersController < ApplicationController
+  before_action :ensure_correct_user, only: [:edit, :update]
+  
   def index
     @users = User.all
   end
@@ -9,16 +11,29 @@ class UsersController < ApplicationController
   end
 
   def edit
+    
   end
-
-
-
-  def get_profile_image(width, height)
-    unless profile_image.attached?
-      file_path = Rails.root.join('app/assets/images/no_image.jpg')
-      profile_image.attach(io: File.open(file_path), filename: 'default-image.jpg', content_type: 'image/jpeg')
+  
+  def update
+    if @user.update(user_params)
+      redirect_to user_path(@user)
+    else
+      render "edit"
     end
-    profile_image.variant(resize_to_limit: [width, height]).processed
+    
   end
+  
+  def user_params
+    params.require(:user).permit(:name, :introduction, :profile_image)
+  end
+
+  def ensure_correct_user
+    @user = User.find(params[:id])
+    unless @user == current_user
+      redirect_to user_path(current_user)
+    end
+  end
+
+  
 
 end
