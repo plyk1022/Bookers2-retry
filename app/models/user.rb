@@ -21,6 +21,9 @@ class User < ApplicationRecord
   # DM機能
   has_many :entries, dependent: :destroy
   has_many :messages, dependent: :destroy
+  
+  # 閲覧数
+  has_many :view_counts, dependent: :destroy
  
  
  has_one_attached :profile_image
